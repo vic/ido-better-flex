@@ -81,7 +81,7 @@
   "Calculates the fuzzy score of matching `string' with `abbreviation'."
     (let ((length (length string))
           (score 0)
-          index factor av)
+          index av)
       (catch 'failed
         (dotimes (i (length abbreviation))
 

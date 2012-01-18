@@ -69,10 +69,6 @@
                     (setq matches (cons (cons item score) matches))))) items)
     (mapcar 'car (sort matches (lambda (x y) (> (cdr x) (cdr y)))))))
 
-(defun ido-better-flex/factor (length index n)
-  "Returns the score for a matching character at position `index' in an string of `length'. The third argument `n' is multiplied by the character score."
-  (/ (+ 1 index) (* 1.0 length (+ 1 index))))
-
 (defun ido-better-flex/position (av string end)
   "Searchs a character `av' on `string' backwards up until index `end'"
   (if ido-case-fold
@@ -84,8 +80,7 @@
 (defun ido-better-flex/build-score (string abbreviation)
   "Calculates the fuzzy score of matching `string' with `abbreviation'."
     (let ((length (length string))
-          (seen 0)
-          (score 0.0)
+          (score 0)
           index factor av)
       (catch 'failed
         (dotimes (i (length abbreviation))
@@ -94,16 +89,14 @@
           (setq index (ido-better-flex/position av string length))
            
           (while (and index
-                  (= 1 (logand 1 (lsh seen (* -1 index))))
+                  (= 1 (logand 1 (lsh score (* -1 index))))
                   (setq index (ido-better-flex/position av string index))))
 
           (unless index (throw 'failed ido-better-flex/NO-MATCH))
           
-          (setq seen (logior seen (lsh 1 index)))
+          (setq score (logior score (lsh 1 index))))
 
-          (setq score (+ score (ido-better-flex/factor length index
-                                                       ido-better-flex/MATCH))))
-          score)))
+          (/ (* score ido-better-flex/MATCH) (- (expt 2 length) 1)))))
 
 ;;;###autoload
 (defadvice ido-set-matches-1 (around ido-better-flex-match)

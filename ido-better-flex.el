@@ -3,7 +3,7 @@
 ;; Copyright 2012 Victor Hugo Borja.
 ;; Author: Victor Hugo Borja <vic.borja@gmail.com>
 ;; URL: http://github.com/vic/ido-better-flex
-;; Version: 0.2
+;; Version: 0.0.2
 ;; Keywords: ido, flex, fuzzy, match, algorithm
 
 ;; Commentary:
@@ -156,6 +156,8 @@
   "An advice using `ido-better-flex' for IDO matching."
   (setq ad-return-value (ido-better-flex/match (ad-get-arg 0))))
 
+;;;###autoload
+(progn (ido-better-flex/enable))
 
 (provide 'ido-better-flex)
 
